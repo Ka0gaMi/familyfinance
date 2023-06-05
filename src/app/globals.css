@@ -1,0 +1,8 @@
+body {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  background-color: #aaa;
+  margin: 0;
+  padding: 0;
+}

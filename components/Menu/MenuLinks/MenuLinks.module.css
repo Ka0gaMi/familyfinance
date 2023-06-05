@@ -1,0 +1,24 @@
+.MenuIcons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  width: 98%;
+}
+
+.MenuIcons a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-right: 2px solid transparent;
+}
+
+.MenuIcons .Active {
+  border-right: 2px solid red;
+}
+
+.MenuIcons .Active svg path {
+  stroke: red;
+}

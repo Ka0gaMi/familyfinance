@@ -1,0 +1,16 @@
+.Menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  height: 100vh;
+}
+
+.Icon {
+  margin: 20px 10px 0 10px;
+}
+
+.Logout {
+  margin: 0 10px 20px 10px;
+}
