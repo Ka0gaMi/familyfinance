@@ -1,0 +1,8 @@
+.Total {
+  border-top: 2px solid #ECECEC;
+  margin-top: 5px;
+  padding-top: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

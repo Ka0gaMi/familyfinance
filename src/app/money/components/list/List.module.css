@@ -1,0 +1,61 @@
+.List {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-top: 2px solid #ECECEC;
+  padding-top: 10px;
+}
+
+.ListItem {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 5px;
+}
+
+.ListItem:nth-child(odd) {
+  background-color: #ECECEC;
+}
+
+.ListItemAmountInput {
+  text-align: right;
+}
+
+input.ListItemAmountInput::-webkit-outer-spin-button,
+input.ListItemAmountInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 8px;
+}
+
+.ListItemNameInput,
+.ListItemAmountInput {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  font-size: 16px;
+}
+
+.ListItemNameInput:focus,
+.ListItemAmountInput:focus {
+  outline: none;
+}
+
+.ListItemAdd {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 5px;
+}
+
+.ListItemAdd:hover {
+  cursor: pointer;
+  background: #ECECEC;
+}

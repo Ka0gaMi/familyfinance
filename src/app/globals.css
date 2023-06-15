@@ -2,7 +2,8 @@ body {
   display: flex;
   flex-direction: row;
   gap: 10px;
-  background-color: #aaa;
+  background-color: #ECECEC;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
