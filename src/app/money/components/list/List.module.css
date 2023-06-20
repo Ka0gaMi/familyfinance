@@ -24,6 +24,10 @@
   text-align: right;
 }
 
+.ListItemNameInput {
+  text-align: center;
+}
+
 input.ListItemAmountInput::-webkit-outer-spin-button,
 input.ListItemAmountInput::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -37,7 +41,8 @@ input.ListItemAmountInput::-webkit-inner-spin-button {
   border: none;
   background-color: transparent;
   padding: 0;
-  font-size: 16px;
+  font-size: 16.5px;
+  letter-spacing: 0.5px;
 }
 
 .ListItemNameInput:focus,
@@ -58,4 +63,8 @@ input.ListItemAmountInput::-webkit-inner-spin-button {
 .ListItemAdd:hover {
   cursor: pointer;
   background: #ECECEC;
+}
+
+.ListDelete {
+  cursor: pointer;
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Actual.module.css"
 import List from "../list/List";
-import { getFinanceByDate, FinanceDto } from "../../../../../service/finance";
+import { FinanceDto } from "../../../../../service/finance";
 
 interface ExpectedProps {
   finances: FinanceDto[];

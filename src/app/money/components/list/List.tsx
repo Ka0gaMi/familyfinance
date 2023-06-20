@@ -2,7 +2,7 @@
 
 import React from "react";
 import styles from "./List.module.css"
-import { FinanceDto } from "../../../../../service/finance";
+import { FinanceDto, deleteFinance, updateFinance, addFinance, createFinanceDto } from "../../../../../service/finance";
 
 interface ListProps {
   finances: FinanceDto[];
@@ -11,106 +11,98 @@ interface ListProps {
 }
 
 export default function List({ finances, setFinances, typeOfExpense }: ListProps) {
-  const [editableIndex, setEditableIndex] = React.useState<number | null>(null);
-  const [amount, setAmount] = React.useState<number | null>(null);
-  const [name, setName] = React.useState<string | null>(null);
+  const [editableNameIndex, setEditableNameIndex] = React.useState<number | null>(null);
+  const [editableAmountIndex, setEditableAmountIndex] = React.useState<number | null>(null);
+  const [isExpenseAdded, setIsExpenseAdded] = React.useState<boolean>(false);
 
-  const handleAmountClick = (index: number) => {
-    setEditableIndex(index);
-    setAmount(finances[index].expectedExpenses.amount)
+  function handleNameClick(index: number) {
+    setEditableNameIndex(index);
   }
 
-  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(Number(event.target.value));
+  function handleNameChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const newFinances = [...finances];
+    const index = editableNameIndex as number;
+    newFinances[index].type.name = event.target.value;
+    setFinances(newFinances);
   }
 
-  const handleAmountBlur = () => {
-    if (amount != null && name === null) {
+  function handleNameBlur() {
+    if (editableNameIndex != null) {
       const newFinances = [...finances];
-      newFinances[editableIndex as number].expectedExpenses.amount = amount;
-      // updateExpectedExpense(newExpenses[editableIndex as number]);
+      const index = editableNameIndex as number;
+      updateFinance(newFinances[index]);
       setFinances(newFinances);
     }
-    setEditableIndex(null);
-    setAmount(null);
-  }
-
-  const handleAmountEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      if (amount != null && name === null) {
-        const newFinances = [...finances];
-        newFinances[editableIndex as number].expectedExpenses.amount = amount;
-        // updateExpectedExpense(newExpenses[editableIndex as number]);
-        setFinances(newFinances);
-      }
-      if (name != null && amount === null) {
-        const newFinances = [...finances];
-        newFinances[editableIndex as number].type.name = name;
-        // updateExpectedExpense(newExpenses[editableIndex as number]);
-        setFinances(newFinances);
-      }
-      setEditableIndex(null);
-      setAmount(null);
-      setName(null);
-      // handleAddEnter(finances[finances.length - 1])
+    if (isExpenseAdded) {
+      setEditableNameIndex(null);
+      handleAmountClick(editableNameIndex as number);
     }
+    setEditableNameIndex(null);
   }
 
-  const handleNameClick = (index: number) => {
-    setEditableIndex(index);
-    setName(finances[index].type.name)
+  function handleAmountClick(index: number) {
+    setEditableAmountIndex(index);
   }
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
+  function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const newFinances = [...finances];
+    const index = editableAmountIndex as number;
+    // @ts-expect-error
+    newFinances[index][typeOfExpense as keyof FinanceDto].amount = Number(event.target.value);
+    setFinances(newFinances);
   }
 
-  const handleNameBlur = () => {
-    if (name != null && amount === null) {
+  function handleAmountBlur() {
+    if (editableAmountIndex != null) {
       const newFinances = [...finances];
-      newFinances[editableIndex as number].type.name = name;
-      // updateExpectedExpense(newExpenses[editableIndex as number]);
+      const index = editableAmountIndex as number;
+      updateFinance(newFinances[index]);
       setFinances(newFinances);
     }
-    setEditableIndex(null);
-    setName(null);
-    // handleAddEnter(finances[finances.length - 1])
+    if (isExpenseAdded) {
+      setIsExpenseAdded(false);
+    }
+    setEditableAmountIndex(null);
   }
 
-  // const handleAddClick = () => {
-  //   const randomUUID = () => {
-  //     return 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-  //       const r = Math.random() * 16 | 0;
-  //       const v = c === 'x' ? r : (r && 0x3 | 0x8);
-  //       return v.toString(16);
-  //     });
-  //   }
-  //   const newExpenses = [...expectedExpenses, { id: randomUUID(), type: "", amount: 0, date: new Date().toLocaleDateString(), typeId: randomUUID() }];
-  //   addExpectedExpense(newExpenses[newExpenses.length - 1]);
-  //   setExpectedExpenses(newExpenses);
-  //   setEditableIndex(newExpenses.length - 1);
-  //   setName(newExpenses[newExpenses.length - 1].type);
-  // }
+  function handleEnter(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      if (editableNameIndex != null) {
+        handleNameBlur();
+      } else if (editableAmountIndex != null) {
+        handleAmountBlur();
+      }
+    }
+  }
 
-  // const handleAddEnter = (expense: ExpectedExpenseDto) => {
-  //   if (expense.type != "" && expense.amount === 0) {
-  //     setEditableIndex(expectedExpenses.length - 1);
-  //     setAmount(0);
-  //   }
-  // }
+  function handleDeleteClick(finance: FinanceDto) {
+    deleteFinance(finance);
+    setFinances(finances.filter((f) => f.id !== finance.id));
+  }
+
+  function handleAddClick() {
+    const newFinances = [...finances];
+    const newFinance = createFinanceDto();
+    addFinance(newFinance);
+    newFinances.push(newFinance);
+    setFinances(newFinances);
+    setIsExpenseAdded(true);
+    handleNameClick(newFinances.length - 1);
+  }
 
   return (
     <div className={styles.List}>
       {finances.map((finance, index) => (
         <div key={finance.id} className={styles.ListItem}>
+          <div className={styles.ListDelete} onClick={() => handleDeleteClick(finance)}>x</div>
           <div className={styles.ListItemName} onClick={() => handleNameClick(index)}>{
-            editableIndex === index && name !=null ? (
+            editableNameIndex === index ? (
               <input
                 type="text"
-                value={name?.toString()}
+                value={finance.type.name}
                 onChange={handleNameChange}
                 onBlur={handleNameBlur}
-                onKeyDown={handleAmountEnter}
+                onKeyDown={handleEnter}
                 className={styles.ListItemNameInput}
                 autoFocus
               />
@@ -119,13 +111,14 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
               )
           }</div>
           <div onClick={() => handleAmountClick(index)} className={styles.ListItemAmount}>{
-            editableIndex === index && amount != null ? (
+            editableAmountIndex === index ? (
               <input
                 type="number"
-                value={amount?.toString()}
+                // @ts-expect-error
+                value={finance[typeOfExpense as keyof FinanceDto].amount}
                 onChange={handleAmountChange}
                 onBlur={handleAmountBlur}
-                onKeyDown={handleAmountEnter}
+                onKeyDown={handleEnter}
                 className={styles.ListItemAmountInput}
                 autoFocus
               />
@@ -142,7 +135,7 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
           }</div>
         </div>
       ))}
-      <div className={styles.ListItemAdd} >
+      <div className={styles.ListItemAdd} onClick={handleAddClick} >
         <div>Add</div>
         <div>+</div>
       </div>
