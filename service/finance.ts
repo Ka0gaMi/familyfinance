@@ -5,8 +5,8 @@ export interface FinanceDto {
   id: string;
   date: string;
   type: TypeDto;
-  expectedExpensesAmount: number;
-  actualExpensesAmount: number;
+  expectedExpensesAmount: number | string;
+  actualExpensesAmount: number | string;
 }
 
 interface TypeDto {

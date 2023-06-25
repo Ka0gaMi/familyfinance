@@ -52,7 +52,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newIncome = [...income];
     const index = editableAmountIndex as number;
-    newIncome[index].amount = Number(event.target.value);
+    newIncome[index].amount = event.target.value.replace(',', '.');
     setIncome(newIncome);
   }
 
@@ -73,7 +73,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
   function handleExpectedDayChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newIncome = [...income];
     const index = editableExpectedDayIndex as number;
-    newIncome[index].expectedDay = Number(event.target.value);
+    newIncome[index].expectedDay = event.target.value;
     setIncome(newIncome);
   }
 
@@ -148,9 +148,9 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     setIsSortedByExpectedDay(null);
     setIsSortedByIsGot(null);
     if (isSortedByAmount) {
-      newIncome.sort((a, b) => a.amount - b.amount);
+      newIncome.sort((a, b) => Number(a.amount) - Number(b.amount));
     } else {
-      newIncome.sort((a, b) => b.amount - a.amount);
+      newIncome.sort((a, b) => Number(b.amount) - Number(a.amount));
     }
     setIsSortedByAmount(!isSortedByAmount);
     setIncome(newIncome);
@@ -161,9 +161,9 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     setIsSortedByAmount(null);
     setIsSortedByIsGot(null);
     if (isSortedByExpectedDay) {
-      newIncome.sort((a, b) => a.expectedDay - b.expectedDay);
+      newIncome.sort((a, b) => Number(a.expectedDay) - Number(b.expectedDay));
     } else {
-      newIncome.sort((a, b) => b.expectedDay - a.expectedDay);
+      newIncome.sort((a, b) => Number(b.expectedDay) - Number(a.expectedDay));
     }
     setIsSortedByExpectedDay(!isSortedByExpectedDay);
     setIncome(newIncome);
@@ -253,7 +253,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
                     style: 'currency',
                     currency: 'EUR'
                   }
-                ).format(income.amount)}</td>
+                ).format(Number(income.amount))}</td>
             }
             {
               editableExpectedDayIndex === index ?
@@ -304,7 +304,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
             style: 'currency',
             currency: 'EUR'
           }
-        ).format(income.reduce((total, income) => total + income.amount, 0))
+        ).format(income.reduce((total, income) => Number(total) + Number(income.amount), 0))
         }</div>
       </div>
     </div>

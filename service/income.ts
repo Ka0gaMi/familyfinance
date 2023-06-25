@@ -5,8 +5,8 @@ export interface IncomeDto {
   id: string;
   date: string;
   name: string;
-  amount: number;
-  expectedDay: number;
+  amount: number | string;
+  expectedDay: number | string;
   isGot: boolean;
   notes: string;
 }
