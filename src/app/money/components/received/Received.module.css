@@ -90,3 +90,19 @@ input.InputAmount::-webkit-inner-spin-button {
   cursor: pointer;
   user-select: none;
 }
+
+.Th {
+  cursor: pointer;
+  user-select: none;
+}
+
+.Th:hover {
+  background: #ECECEC;
+}
+
+.Sorting {
+  margin: 0;
+  padding: 0;
+  margin-left: 2px;
+  margin-right: 2px;
+}

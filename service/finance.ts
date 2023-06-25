@@ -5,8 +5,8 @@ export interface FinanceDto {
   id: string;
   date: string;
   type: TypeDto;
-  expectedExpenses: ExpenseDto;
-  actualExpenses: ExpenseDto;
+  expectedExpensesAmount: number;
+  actualExpensesAmount: number;
 }
 
 interface TypeDto {
@@ -14,13 +14,8 @@ interface TypeDto {
   name: string;
 }
 
-export interface ExpenseDto {
-  id: string;
-  amount: number;
-}
-
-export async function getFinanceByDate(): Promise<FinanceDto[]> {
-  const response = await axios.get(`${apiUrl}/finance/get_finance?date=2023-06`);
+export async function getFinanceByDate(date: string): Promise<FinanceDto[]> {
+  const response = await axios.get(`${apiUrl}/finance/get_finance?date=${date}`);
   return response.data;
 }
 
@@ -53,13 +48,12 @@ export function createFinanceDto(): FinanceDto {
       id: uuid(),
       name: '',
     },
-    expectedExpenses: {
-      id: uuid(),
-      amount: 0,
-    },
-    actualExpenses: {
-      id: uuid(),
-      amount: 0,
-    },
+    expectedExpensesAmount: 0,
+    actualExpensesAmount: 0
   }
+}
+
+export async function getDefaultFinances(date: string) {
+  const response = await axios.get(`${apiUrl}/finance/get_default_finance?date=${date}`);
+  return response.data;
 }

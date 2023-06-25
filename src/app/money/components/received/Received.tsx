@@ -16,6 +16,10 @@ export default function Received({ income, setIncome }: ReceivedProps) {
   const [editableNotesIndex, setEditableNotesIndex] = React.useState<number | null>(null);
   const [isIncomeAdded, setIsIncomeAdded] = React.useState<boolean>(false);
 
+  const [isSortedByAmount, setIsSortedByAmount] = React.useState<boolean | null>(null);
+  const [isSortedByExpectedDay, setIsSortedByExpectedDay] = React.useState<boolean | null>(null);
+  const [isSortedByIsGot, setIsSortedByIsGot] = React.useState<boolean | null>(null);
+
   function handleIsGotClick(id: string) {
     const newIncome = [...income];
     const index = newIncome.findIndex((income) => income.id === id);
@@ -139,6 +143,45 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     setEditableNameIndex(newIncome.length - 1);
   }
 
+  function sortByAmount() {
+    const newIncome = [...income];
+    setIsSortedByExpectedDay(null);
+    setIsSortedByIsGot(null);
+    if (isSortedByAmount) {
+      newIncome.sort((a, b) => a.amount - b.amount);
+    } else {
+      newIncome.sort((a, b) => b.amount - a.amount);
+    }
+    setIsSortedByAmount(!isSortedByAmount);
+    setIncome(newIncome);
+  }
+
+  function sortByExpectedDay() {
+    const newIncome = [...income];
+    setIsSortedByAmount(null);
+    setIsSortedByIsGot(null);
+    if (isSortedByExpectedDay) {
+      newIncome.sort((a, b) => a.expectedDay - b.expectedDay);
+    } else {
+      newIncome.sort((a, b) => b.expectedDay - a.expectedDay);
+    }
+    setIsSortedByExpectedDay(!isSortedByExpectedDay);
+    setIncome(newIncome);
+  }
+
+  function sortByIsGot() {
+    const newIncome = [...income];
+    setIsSortedByAmount(null);
+    setIsSortedByExpectedDay(null);
+    if (isSortedByIsGot) {
+      newIncome.sort((a, b) => Number(a.isGot) - Number(b.isGot));
+    } else {
+      newIncome.sort((a, b) => Number(b.isGot) - Number(a.isGot));
+    }
+    setIsSortedByIsGot(!isSortedByIsGot);
+    setIncome(newIncome);
+  }
+
   return (
     <div>
       <div className={styles.Name}>Received income</div>
@@ -146,11 +189,28 @@ export default function Received({ income, setIncome }: ReceivedProps) {
         <thead>
           <tr>
             <th style={{width: '20px'}}></th>
-            <th>Siuntejas</th>
-            <th>Suma</th>
-            <th>Gavimo diena</th>
-            <th>Komentarai</th>
-            <th>Ar gauti?</th>
+            <th className={styles.Th}>Siuntejas</th>
+            <th className={styles.Th} onClick={sortByAmount}>Suma {isSortedByAmount != null 
+              ? isSortedByAmount
+                ? <span className={styles.Sorting}>▲</span>
+                : <span className={styles.Sorting}>▼</span>
+              : <span className={styles.Sorting}>▼▲</span>
+          }</th>
+            <th className={styles.Th} onClick={sortByExpectedDay}>Gavimo diena {
+              isSortedByExpectedDay != null
+                ? isSortedByExpectedDay
+                  ? <span className={styles.Sorting}>▲</span>
+                  : <span className={styles.Sorting}>▼</span>
+                : <span className={styles.Sorting}>▼▲</span>
+            }</th>
+            <th className={styles.Th}>Komentarai</th>
+            <th className={styles.Th} onClick={sortByIsGot}>Ar gauti? {
+              isSortedByIsGot != null
+                ? isSortedByIsGot
+                  ? <span className={styles.Sorting}>▲</span>
+                  : <span className={styles.Sorting}>▼</span>
+                : <span className={styles.Sorting}>▼▲</span>
+            }</th>
           </tr>
         </thead>
         <tbody>

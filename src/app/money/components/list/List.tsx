@@ -48,7 +48,7 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
     const newFinances = [...finances];
     const index = editableAmountIndex as number;
     // @ts-expect-error
-    newFinances[index][typeOfExpense as keyof FinanceDto].amount = Number(event.target.value);
+    newFinances[index][typeOfExpense as keyof FinanceDto] = Number(event.target.value);
     setFinances(newFinances);
   }
 
@@ -115,7 +115,7 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
               <input
                 type="number"
                 // @ts-expect-error
-                value={finance[typeOfExpense as keyof FinanceDto].amount}
+                value={finance[typeOfExpense as keyof FinanceDto]}
                 onChange={handleAmountChange}
                 onBlur={handleAmountBlur}
                 onKeyDown={handleEnter}
@@ -130,7 +130,7 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
                   currency: 'EUR'
                 }
                 // @ts-expect-error
-              ).format(finance[typeOfExpense as keyof FinanceDto].amount)
+              ).format(finance[typeOfExpense as keyof FinanceDto])
               )
           }</div>
         </div>

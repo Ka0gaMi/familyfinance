@@ -11,8 +11,8 @@ export interface IncomeDto {
   notes: string;
 }
 
-export async function getIncomeByDate() {
-  const response = await axios.get(`${apiUrl}/finance/get_income?date=2023-06`);
+export async function getIncomeByDate(date: string) {
+  const response = await axios.get(`${apiUrl}/finance/get_income?date=${date}`);
   return response.data;
 }
 
@@ -47,4 +47,9 @@ export function createIncomeDto(): IncomeDto {
     isGot: false,
     notes: '',
   }
+}
+
+export async function getDefaultIncomes(date: string) {
+  const response = await axios.get(`${apiUrl}/finance/get_default_income?date=${date}`);
+  return response.data;
 }

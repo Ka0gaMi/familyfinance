@@ -14,17 +14,17 @@ export default function Actual({ finances, setFinances }: ExpectedProps) {
   React.useEffect(() => {
     let total = 0;
     finances.forEach(finance => {
-      total += finance.actualExpenses.amount;
+      total += finance.actualExpensesAmount;
     setTotalExpenses(total);
     })
   }, [finances])
 
   return (
     <>
-      <div>Expected expenses</div>
-      <List finances={finances} setFinances={setFinances} typeOfExpense="actualExpenses" />
+      <div>Actual expenses</div>
+      <List finances={finances} setFinances={setFinances} typeOfExpense="actualExpensesAmount" />
       <div className={styles.Total}>
-        <div>Total expenses</div>
+        <div>Total actual expenses</div>
         <div>{Intl.NumberFormat(
           'lt-LT',
           {

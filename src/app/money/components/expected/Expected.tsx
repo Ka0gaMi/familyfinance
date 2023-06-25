@@ -16,7 +16,7 @@ export default function Expected({ finances, setFinances }: ExpectedProps) {
   React.useEffect(() => {
     let total = 0;
     finances.forEach(finance => {
-      total += finance.expectedExpenses.amount;
+      total += finance.expectedExpensesAmount;
     setTotalExpenses(total);
     })
   }, [finances])
@@ -24,9 +24,9 @@ export default function Expected({ finances, setFinances }: ExpectedProps) {
   return (
     <>
       <div>Expected expenses</div>
-      <List finances={finances} setFinances={setFinances} typeOfExpense="expectedExpenses" />
+      <List finances={finances} setFinances={setFinances} typeOfExpense="expectedExpensesAmount" />
       <div className={styles.Total}>
-        <div>Total expenses</div>
+        <div>Total expected expenses</div>
         <div>{Intl.NumberFormat(
           'lt-LT',
           {
