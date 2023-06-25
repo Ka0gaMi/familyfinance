@@ -74,4 +74,4 @@ jobs:
           app-name: 'familyfinance'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A201FD741AEE4E80811FFEDF2B33C68C }}
-          package: release.zip
+          package: .
