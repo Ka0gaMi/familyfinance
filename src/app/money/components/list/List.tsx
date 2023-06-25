@@ -113,14 +113,13 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
           <div onClick={() => handleAmountClick(index)} className={styles.ListItemAmount}>{
             editableAmountIndex === index ? (
               <input
-                type="number"
+                type="text"
                 // @ts-expect-error
                 value={finance[typeOfExpense as keyof FinanceDto]}
                 onChange={handleAmountChange}
                 onBlur={handleAmountBlur}
                 onKeyDown={handleEnter}
                 className={styles.ListItemAmountInput}
-                step={0.01}
                 autoFocus
               />
               ) : (

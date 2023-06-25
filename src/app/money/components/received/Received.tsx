@@ -238,12 +238,11 @@ export default function Received({ income, setIncome }: ReceivedProps) {
                 <td>
                   <input
                     className={styles.InputAmount}
-                    type="number"
+                    type="text"
                     value={income.amount}
                     onChange={handleAmountChange}
                     onBlur={handleAmountBlur}
                     onKeyDown={handleEnter}
-                    step={0.01}
                     autoFocus
                   />
                 </td>
