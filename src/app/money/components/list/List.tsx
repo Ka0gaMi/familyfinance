@@ -120,6 +120,7 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
                 onBlur={handleAmountBlur}
                 onKeyDown={handleEnter}
                 className={styles.ListItemAmountInput}
+                step={0.01}
                 autoFocus
               />
               ) : (
