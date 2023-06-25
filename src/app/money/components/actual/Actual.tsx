@@ -14,7 +14,7 @@ export default function Actual({ finances, setFinances }: ExpectedProps) {
   React.useEffect(() => {
     let total = 0;
     finances.forEach(finance => {
-      total += finance.actualExpensesAmount;
+      total += Number(finance.actualExpensesAmount);
     setTotalExpenses(total);
     })
   }, [finances])

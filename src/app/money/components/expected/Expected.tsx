@@ -16,7 +16,7 @@ export default function Expected({ finances, setFinances }: ExpectedProps) {
   React.useEffect(() => {
     let total = 0;
     finances.forEach(finance => {
-      total += finance.expectedExpensesAmount;
+      total += Number(finance.expectedExpensesAmount);
     setTotalExpenses(total);
     })
   }, [finances])
