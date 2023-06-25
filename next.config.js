@@ -7,10 +7,8 @@ const nextConfig = {
     });
 
     return config;
-  }
+  },
+  output: 'standalone'
 }
 
-module.exports = {
-  nextConfig,
-  output: "standalone"
-}
+module.exports = nextConfig
