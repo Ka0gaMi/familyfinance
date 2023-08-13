@@ -3,6 +3,13 @@
 import React from "react";
 import styles from "./List.module.css"
 import { FinanceDto, deleteFinance, updateFinance, addFinance, createFinanceDto } from "../../../../../service/finance";
+import { updateFinanceAndSetToStore, deleteFinanceAndSetToStore, createFinanceAndSetToStore } from "../../../../../redux/slice/financeSlice";
+import { useDispatch } from "react-redux";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { RootState } from "../../../../../redux/reducer/rootReducer";
+import { Dialog } from "@mui/material";
+import AddExpenseForm from "../forms/addExpenseForm/AddExpenseForm";
+import DeleteExpenseForm from "../forms/deleteForm/DeleteExpenseForm";
 
 interface ListProps {
   finances: FinanceDto[];
@@ -14,6 +21,12 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
   const [editableNameIndex, setEditableNameIndex] = React.useState<number | null>(null);
   const [editableAmountIndex, setEditableAmountIndex] = React.useState<number | null>(null);
   const [isExpenseAdded, setIsExpenseAdded] = React.useState<boolean>(false);
+
+  const [isAddDialogOpen, setIsAddDialogOpen] = React.useState<boolean>(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState<boolean>(false);
+  const [financeToDelete, setFinanceToDelete] = React.useState<FinanceDto | null>(null);
+
+  const dispatch = useDispatch<ThunkDispatch<RootState, void, AnyAction>>();
 
   function handleNameClick(index: number) {
     setEditableNameIndex(index);
@@ -30,7 +43,7 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
     if (editableNameIndex != null) {
       const newFinances = [...finances];
       const index = editableNameIndex as number;
-      updateFinance(newFinances[index]);
+      dispatch(updateFinanceAndSetToStore(newFinances[index]));
       setFinances(newFinances);
     }
     if (isExpenseAdded) {
@@ -56,7 +69,7 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
     if (editableAmountIndex != null) {
       const newFinances = [...finances];
       const index = editableAmountIndex as number;
-      updateFinance(newFinances[index]);
+      void dispatch(updateFinanceAndSetToStore(newFinances[index]));
       setFinances(newFinances);
     }
     if (isExpenseAdded) {
@@ -76,25 +89,29 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
   }
 
   function handleDeleteClick(finance: FinanceDto) {
-    deleteFinance(finance);
-    setFinances(finances.filter((f) => f.id !== finance.id));
+    setFinanceToDelete(finance)
+    setIsDeleteDialogOpen(true);
   }
 
   function handleAddClick() {
-    const newFinances = [...finances];
-    const newFinance = createFinanceDto();
-    addFinance(newFinance);
-    newFinances.push(newFinance);
-    setFinances(newFinances);
-    setIsExpenseAdded(true);
-    handleNameClick(newFinances.length - 1);
+    setIsAddDialogOpen(true);
+  }
+
+  function handleDeleteDialogClose() {
+    setIsDeleteDialogOpen(false);
+  }
+
+  function handleAddDialogClose() {
+    setIsAddDialogOpen(false);
   }
 
   return (
     <div className={styles.List}>
       {finances.map((finance, index) => (
         <div key={finance.id} className={styles.ListItem}>
-          <div className={styles.ListDelete} onClick={() => handleDeleteClick(finance)}>x</div>
+          <div className={styles.ListDelete} onClick={
+            () => handleDeleteClick(finance)
+          }>x</div>
           <div className={styles.ListItemName} onClick={() => handleNameClick(index)}>{
             editableNameIndex === index ? (
               <input
@@ -139,6 +156,12 @@ export default function List({ finances, setFinances, typeOfExpense }: ListProps
         <div>Add</div>
         <div>+</div>
       </div>
+      <Dialog open={isAddDialogOpen} onClose={handleAddDialogClose}>
+        <AddExpenseForm handleDialogClose={handleAddDialogClose} />
+      </Dialog>
+      <Dialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose}>
+        <DeleteExpenseForm handleDeleteDialogClose={handleDeleteDialogClose} financeToDelete={financeToDelete} />
+      </Dialog>
     </div>
   )
 }

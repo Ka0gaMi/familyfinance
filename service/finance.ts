@@ -1,5 +1,7 @@
 import axios from "axios";
 import { apiUrl } from "../config/config";
+import moment from "moment";
+import { TypeDto } from "./type";
 
 export interface FinanceDto {
   id: string;
@@ -9,13 +11,8 @@ export interface FinanceDto {
   actualExpensesAmount: number | string;
 }
 
-interface TypeDto {
-  id: string;
-  name: string;
-}
-
-export async function getFinanceByDate(date: string): Promise<FinanceDto[]> {
-  const response = await axios.get(`${apiUrl}/finance/get_finance?date=${date}`);
+export async function fetchFinances(): Promise<FinanceDto[]> {
+  const response = await axios.get(`${apiUrl}/finance/get_finances`);
   return response.data;
 }
 
@@ -29,7 +26,7 @@ export async function deleteFinance(finance: FinanceDto) {
   return response.data;
 }
 
-export async function updateFinance(finance: FinanceDto) {
+export async function updateFinance(finance: FinanceDto): Promise<FinanceDto> {
   const response = await axios.put(`${apiUrl}/finance/update_finance`, finance);
   return response.data;
 }
@@ -43,7 +40,7 @@ function uuid() {
 export function createFinanceDto(): FinanceDto {
   return {
     id: uuid(),
-    date: new Date().toISOString().slice(0, 7),
+    date: moment().format('YYYY-MM'),
     type: {
       id: uuid(),
       name: '',
@@ -53,7 +50,7 @@ export function createFinanceDto(): FinanceDto {
   }
 }
 
-export async function getDefaultFinances(date: string) {
+export async function getDefaultFinances(date: string): Promise<FinanceDto[]> {
   const response = await axios.get(`${apiUrl}/finance/get_default_finance?date=${date}`);
   return response.data;
 }

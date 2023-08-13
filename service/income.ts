@@ -1,5 +1,6 @@
 import axios from "axios";
 import { apiUrl } from "../config/config";
+import moment from "moment";
 
 export interface IncomeDto {
   id: string;
@@ -11,8 +12,8 @@ export interface IncomeDto {
   notes: string;
 }
 
-export async function getIncomeByDate(date: string) {
-  const response = await axios.get(`${apiUrl}/finance/get_income?date=${date}`);
+export async function fetchIncomes(): Promise<IncomeDto[]> {
+  const response = await axios.get(`${apiUrl}/finance/get_incomes`);
   return response.data;
 }
 
@@ -40,7 +41,7 @@ function uuid() {
 export function createIncomeDto(): IncomeDto {
   return {
     id: uuid(),
-    date: new Date().toISOString().slice(0, 7),
+    date: moment().format('YYYY-MM'),
     name: '',
     amount: 0,
     expectedDay: 0,
@@ -49,7 +50,12 @@ export function createIncomeDto(): IncomeDto {
   }
 }
 
-export async function getDefaultIncomes(date: string) {
+export async function getDefaultIncomes(date: string): Promise<IncomeDto[]> {
   const response = await axios.get(`${apiUrl}/finance/get_default_income?date=${date}`);
+  return response.data;
+}
+
+export async function getDefaults(): Promise<IncomeDto[]> {
+  const response = await axios.get(`${apiUrl}/finance/get_default_incomes`);
   return response.data;
 }

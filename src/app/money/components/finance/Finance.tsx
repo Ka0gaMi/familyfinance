@@ -4,37 +4,64 @@ import React from "react";
 import styles from "./Finance.module.css"
 import Expected from "../expected/Expected";
 import Actual from "../actual/Actual";
-import { getFinanceByDate, FinanceDto, getDefaultFinances } from "../../../../../service/finance";
-import { IncomeDto, getIncomeByDate, getDefaultIncomes } from "../../../../../service/income";
+import { FinanceDto, fetchFinances } from "../../../../../service/finance";
+import { IncomeDto } from "../../../../../service/income";
 import Received from "../received/Received";
-import { IconButton } from "@mui/material";
+import { CircularProgress, Fab } from "@mui/material";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
+import { 
+  addFinanceAndSetToStore,
+  fetchFinancesAndSetToStore, 
+  selectFinances,
+} from "../../../../../redux/slice/financeSlice";
+import { 
+  fetchIncomesAndSetToStore, 
+  selectIncomes, 
+  addIncomeAndSetToStore
+} from "../../../../../redux/slice/incomeSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../../../redux/reducer/rootReducer";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { cloneDeep } from "lodash";
+import moment from "moment";
 
 export default function Finance() {
-  const [finances, setFinances] = React.useState<FinanceDto[]>([] as FinanceDto[]);
-  const [income, setIncome] = React.useState<IncomeDto[]>([] as IncomeDto[]);
-  const [date, setDate] = React.useState<string>(new Date().toISOString().slice(0, 7));
-  const [monthCount, setMonthCount] = React.useState<number>(0);
+  const dispatch = useDispatch<ThunkDispatch<RootState, void, AnyAction>>();
 
   React.useEffect(() => {
-    const getFinance = async () => {
-      const financeDto = await getFinanceByDate(date);
-      const incomeDto = await getIncomeByDate(date);
+    dispatch(fetchFinancesAndSetToStore());
+    dispatch(fetchIncomesAndSetToStore());
+  }, [dispatch]);
 
-      if (financeDto.length === 0 && incomeDto.length === 0) {
-        const defaultFinances = await getDefaultFinances(date);
-        const defaultIncomes = await getDefaultIncomes(date);
-        setFinances(defaultFinances);
-        setIncome(defaultIncomes);
-        return;
-      }
+  const financesFromState = useSelector((state: RootState) => selectFinances(state));
+  const incomesFromState = useSelector((state: RootState) => selectIncomes(state));
 
-      setFinances(financeDto);
-      setIncome(incomeDto);
+  const [finances, setFinances] = React.useState<FinanceDto[]>([]);
+  const [income, setIncome] = React.useState<IncomeDto[]>([]);
+  const [date, setDate] = React.useState<string>(moment().format('YYYY-MM'));
+  const [monthCount, setMonthCount] = React.useState<number>(0);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    if (financesFromState.length > 0 && incomesFromState.length > 0) {
+      setLoading(false);
     }
+  }, [financesFromState, incomesFromState]);
 
-    getFinance();
-  }, [date])
+  React.useEffect(() => {
+    if (!loading) {
+      const selectedFinances = cloneDeep(financesFromState.filter(finance => finance.date === date));
+      const selectedIncomes = cloneDeep(incomesFromState.filter(income => income.date === date));
+
+      if (selectedFinances.length === 0 && selectedIncomes.length === 0) {
+        void dispatch(addFinanceAndSetToStore(date))
+        void dispatch(addIncomeAndSetToStore(date))
+      } else {
+        setFinances(selectedFinances);
+        setIncome(selectedIncomes);
+      }
+    }
+  }, [date, loading, financesFromState]);
 
   function handleLeft() {
     updateDate(-1);
@@ -45,35 +72,36 @@ export default function Finance() {
   }
 
   function updateDate(monthsToAdd: number) {
-    const newDate = new Date(date);
-    newDate.setMonth(newDate.getMonth() + monthsToAdd);
-    if (newDate.getMonth() === 3) {
-      newDate.setMonth(4);
-    }
-    setDate(newDate.toISOString().slice(0, 7));
-    setMonthCount(monthCount + monthsToAdd)
+    const newDate = moment(date).add(monthsToAdd, 'months').format('YYYY-MM');
+    setDate(newDate);
+    setMonthCount(monthCount + monthsToAdd);
   }
 
   return (
     <>
-      <div className={styles.Menu}>
-        <IconButton onClick={handleLeft} >
-          <KeyboardArrowLeft />
-        </IconButton>
-        <div>{date}</div>
-        <IconButton onClick={handleRight} disabled={monthCount >= 3} >
-          <KeyboardArrowRight />
-        </IconButton>
-      </div>
-      <div className={styles.Expected}>
-        <Expected finances={finances} setFinances={setFinances} />
-      </div>
-      <div className={styles.Actual}>
-        <Actual finances={finances} setFinances={setFinances} />
-      </div>
-      <div className={styles.Received}>
-        <Received income={income} setIncome={setIncome} />
-      </div>
+      {loading 
+      ? ( <CircularProgress size={100} style={{ color: "red" }} /> ) 
+      : ( 
+      <>
+        <div className={styles.Menu}>
+          <Fab size="small" onClick={handleLeft}>
+            <KeyboardArrowLeft />
+          </Fab>
+          <div>{date}</div>
+          <Fab size="small" onClick={handleRight} disabled={monthCount >= 3}>
+            <KeyboardArrowRight />
+          </Fab>
+        </div>
+        <div className={styles.Expected}>
+          <Expected finances={finances} setFinances={setFinances} />
+        </div>
+        <div className={styles.Actual}>
+          <Actual finances={finances} setFinances={setFinances} />
+        </div>
+        <div className={styles.Received}>
+          <Received income={income} setIncome={setIncome} />
+        </div>
+      </> ) }
     </>
   )
 }

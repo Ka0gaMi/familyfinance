@@ -1,4 +1,5 @@
 import Menu from '../../components/Menu/Menu'
+import Providers from './Providers'
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -18,8 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body className={inter.className}>
-        <Menu />
-        {children}
+        <Providers>
+          <Menu />
+          {children}
+        </Providers>
       </body>
     </html>
   )

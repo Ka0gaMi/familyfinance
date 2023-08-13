@@ -2,7 +2,13 @@
 
 import React from "react";
 import styles from "./Received.module.css"
-import { IncomeDto, updateIncome, deleteIncome, addIncome, createIncomeDto } from "../../../../../service/income";
+import { IncomeDto } from "../../../../../service/income";
+import { deleteIncomeAndSetToStore, updateIncomeAndSetToStore } from "../../../../../redux/slice/incomeSlice";
+import { useDispatch } from "react-redux";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { RootState } from "../../../../../redux/reducer/rootReducer";
+import { Dialog } from "@mui/material";
+import AddIncomeForm from "../forms/addIncomeForm/AddIncomeForm";
 
 interface ReceivedProps {
   income: IncomeDto[];
@@ -20,11 +26,15 @@ export default function Received({ income, setIncome }: ReceivedProps) {
   const [isSortedByExpectedDay, setIsSortedByExpectedDay] = React.useState<boolean | null>(null);
   const [isSortedByIsGot, setIsSortedByIsGot] = React.useState<boolean | null>(null);
 
+  const [isAddIncomeDialogOpen, setIsAddIncomeDialogOpen] = React.useState<boolean>(false);
+
+  const dispatch = useDispatch<ThunkDispatch<RootState, void, AnyAction>>();
+
   function handleIsGotClick(id: string) {
     const newIncome = [...income];
     const index = newIncome.findIndex((income) => income.id === id);
     newIncome[index].isGot = !newIncome[index].isGot;
-    updateIncome(newIncome[index]);
+    dispatch(updateIncomeAndSetToStore(newIncome[index]));
     setIncome(newIncome);
   }
 
@@ -39,7 +49,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     if (editableNameIndex != null) {
       const newIncome = [...income];
       const index = editableNameIndex as number;
-      updateIncome(newIncome[index]);
+      dispatch(updateIncomeAndSetToStore(newIncome[index]));
       setIncome(newIncome);
     }
     if (isIncomeAdded) {
@@ -60,7 +70,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     if (editableAmountIndex != null) {
       const newIncome = [...income];
       const index = editableAmountIndex as number;
-      updateIncome(newIncome[index]);
+      dispatch(updateIncomeAndSetToStore(newIncome[index]));
       setIncome(newIncome);
     }
     if (isIncomeAdded) {
@@ -81,7 +91,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     if (editableExpectedDayIndex != null) {
       const newIncome = [...income];
       const index = editableExpectedDayIndex as number;
-      updateIncome(newIncome[index]);
+      dispatch(updateIncomeAndSetToStore(newIncome[index]));
       setIncome(newIncome);
     }
     if (isIncomeAdded) {
@@ -102,7 +112,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     if (editableNotesIndex != null) {
       const newIncome = [...income];
       const index = editableNotesIndex as number;
-      updateIncome(newIncome[index]);
+      dispatch(updateIncomeAndSetToStore(newIncome[index]));
       setIncome(newIncome);
     }
     if (isIncomeAdded) {
@@ -129,18 +139,16 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     const newIncome = [...income];
     const index = newIncome.findIndex((income) => income.id === id);
     newIncome.splice(index, 1);
-    deleteIncome(id);
+    dispatch(deleteIncomeAndSetToStore(id));
     setIncome(newIncome);
   }
 
   function handleAddClick() {
-    const newIncome = [...income];
-    const newIncomeDto = createIncomeDto();
-    newIncome.push(newIncomeDto);
-    addIncome(newIncomeDto);
-    setIncome(newIncome);
-    setIsIncomeAdded(true);
-    setEditableNameIndex(newIncome.length - 1);
+    setIsAddIncomeDialogOpen(true);
+  }
+
+  function handleAddIncomeDialogClose() {
+    setIsAddIncomeDialogOpen(false);
   }
 
   function sortByAmount() {
@@ -307,6 +315,10 @@ export default function Received({ income, setIncome }: ReceivedProps) {
         ).format(income.reduce((total, income) => Number(total) + Number(income.amount), 0))
         }</div>
       </div>
+      {/* TODO: Add Dialog */}
+      <Dialog open={isAddIncomeDialogOpen} onClose={handleAddIncomeDialogClose} fullWidth>
+        <AddIncomeForm handleDialogClose={handleAddIncomeDialogClose} />
+      </Dialog>
     </div>
   )
 }
