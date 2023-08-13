@@ -5,13 +5,13 @@ import { useDispatch } from "react-redux";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { RootState } from "../redux/reducer/rootReducer";
 
-type AddActionTypes =
-  | typeof addFinanceAndSetToStore
-  | typeof addIncomeAndSetToStore
+// type AddActionTypes =
+//   | typeof addFinanceAndSetToStore
+//   | typeof addIncomeAndSetToStore
 
-export default function useAddAction(addAction: AddActionTypes, date: string) {
-  const dispatch = useDispatch<ThunkDispatch<RootState, void, AnyAction>>();
-  useEffect(() => {
-    void dispatch(addAction(date));
-  }, [dispatch, addAction, date]);
-}
+// export default function useAddAction(addAction: AddActionTypes, date: string) {
+//   const dispatch = useDispatch<ThunkDispatch<RootState, void, AnyAction>>();
+//   useEffect(() => {
+//     void dispatch(addAction(date));
+//   }, [dispatch, addAction, date]);
+// }
