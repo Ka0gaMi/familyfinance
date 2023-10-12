@@ -34,7 +34,7 @@ export default function Finance() {
   }, [dispatch]);
 
   const financesFromState = useSelector((state: RootState) => selectFinances(state));
-  const incomesFromState = useSelector((state: RootState) => selectIncomes(state));
+  const incomesFromState = useSelector((state: RootState) => state.incomes.incomes);
 
   const [finances, setFinances] = React.useState<FinanceDto[]>([]);
   const [income, setIncome] = React.useState<IncomeDto[]>([]);
@@ -61,7 +61,9 @@ export default function Finance() {
         setIncome(selectedIncomes);
       }
     }
-  }, [date, loading, financesFromState]);
+  }, [date, loading, financesFromState, incomesFromState]);
+
+  console.log(income)
 
   function handleLeft() {
     updateDate(-1);

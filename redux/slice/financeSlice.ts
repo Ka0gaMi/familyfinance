@@ -54,7 +54,6 @@ export const fetchFinancesAndSetToStore = createAsyncThunk(
   'finances/fetchFinancesAndSetToStore',
   async (arg, { dispatch }) => {
     const finances = await fetchFinances();
-    console.log(finances);
     dispatch(setFinances(finances));
   }
 )

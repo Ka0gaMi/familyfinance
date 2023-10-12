@@ -27,8 +27,8 @@ export async function updateIncome(income: IncomeDto) {
   return response.data;
 }
 
-export async function deleteIncome(id: string) {
-  const response = await axios.delete(`${apiUrl}/finance/delete_income?id=${id}`);
+export async function deleteIncome(income: IncomeDto) {
+  const response = await axios.delete(`${apiUrl}/finance/delete_income`, { data: income });
   return response.data;
 }
 

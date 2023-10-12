@@ -3,12 +3,19 @@ import styles from "./AddIncomeForm.module.css";
 import { Autocomplete, Button, FormControl, TextField } from "@mui/material";
 import { indexOf } from "lodash";
 import { getDefaults } from "../../../../../../service/income";
+import { createIncomeDto } from "../../../../../../service/income";
+import { createIncomeAndSetToStore } from "../../../../../../redux/slice/incomeSlice";
+import { useDispatch } from "react-redux";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { RootState } from "../../../../../../redux/reducer/rootReducer";
 
 interface AddIncomeFormProps {
   handleDialogClose: () => void;
 }
 
 export default function AddExpenseForm({ handleDialogClose }: AddIncomeFormProps) {
+  const dispatch = useDispatch<ThunkDispatch<RootState, void, AnyAction>>();
+
   const [sender, setSender] = React.useState<string>('');
   const [amount, setAmount] = React.useState<string>('');
 
@@ -36,6 +43,15 @@ export default function AddExpenseForm({ handleDialogClose }: AddIncomeFormProps
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const name = formData.get('name') as string;
+    const amount = formData.get('amount') as string;
+    const incomeDto = createIncomeDto();
+    incomeDto.name = name;
+    incomeDto.amount = amount.replace(',', '.');
+    void dispatch(createIncomeAndSetToStore(incomeDto));
+    handleDialogClose();
   }
 
   return (
@@ -91,7 +107,7 @@ export default function AddExpenseForm({ handleDialogClose }: AddIncomeFormProps
           </div>
           <div className={styles.AddIncomeFormButtons}>
             <Button variant="contained" color="error" onClick={handleDialogClose}>Cancel</Button>
-            <Button variant="contained" color="success">Add</Button>
+            <Button variant="contained" color="success" type="submit">Add</Button>
           </div>
         </div>
       </form>

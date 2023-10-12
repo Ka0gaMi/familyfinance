@@ -30,7 +30,7 @@ export const incomeSlice = createSlice({
   initialState,
   reducers: {
     addIncomes: (state, action: PayloadAction<IncomeDto>) => {
-      state.incomes.push(action.payload);
+      state.incomes = [...state.incomes, action.payload];
     },
     setIncomes: (state, action: PayloadAction<IncomeDto[]>) => {
       state.incomes = action.payload;
@@ -89,7 +89,6 @@ export const addIncomeAndSetToStore = createAsyncThunk(
       thunkAPI.dispatch(addIncomes(income));
     });
     thunkAPI.dispatch(setLoading(false));
-    return incomes;
   },
   {
     condition: (date: string, { getState }) => {
@@ -104,17 +103,17 @@ export const addIncomeAndSetToStore = createAsyncThunk(
 
 export const createIncomeAndSetToStore = createAsyncThunk(
   'incomes/createIncomeAndSetToStore',
-  async (income: IncomeDto, thunkAPI) => {
-    const createdIncome = await addIncome(income);
-    thunkAPI.dispatch(addIncomes(createdIncome));
+  async (income: IncomeDto, { dispatch }) => {
+    await addIncome(income);
+    dispatch(addIncomes(income));
   }
 )
 
 export const deleteIncomeAndSetToStore = createAsyncThunk(
   'incomes/deleteIncomeAndSetToStore',
-  async (id: string, thunkAPI) => {
-    const deletedIncome = await deleteIncome(id);
-    thunkAPI.dispatch(deleteIncomes(deletedIncome));
+  async (income: IncomeDto, { dispatch }) => {
+    await deleteIncome(income);
+    dispatch(deleteIncomes(income));
   }
 )
 

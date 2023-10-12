@@ -9,6 +9,7 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { RootState } from "../../../../../redux/reducer/rootReducer";
 import { Dialog } from "@mui/material";
 import AddIncomeForm from "../forms/addIncomeForm/AddIncomeForm";
+import { cloneDeep } from "lodash";
 
 interface ReceivedProps {
   income: IncomeDto[];
@@ -31,7 +32,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
   const dispatch = useDispatch<ThunkDispatch<RootState, void, AnyAction>>();
 
   function handleIsGotClick(id: string) {
-    const newIncome = [...income];
+    const newIncome = cloneDeep(income);
     const index = newIncome.findIndex((income) => income.id === id);
     newIncome[index].isGot = !newIncome[index].isGot;
     dispatch(updateIncomeAndSetToStore(newIncome[index]));
@@ -135,12 +136,8 @@ export default function Received({ income, setIncome }: ReceivedProps) {
     }
   }
 
-  function handleDeleteClick(id: string) {
-    const newIncome = [...income];
-    const index = newIncome.findIndex((income) => income.id === id);
-    newIncome.splice(index, 1);
-    dispatch(deleteIncomeAndSetToStore(id));
-    setIncome(newIncome);
+  function handleDeleteClick(incomeToDelete: IncomeDto) {
+    void dispatch(deleteIncomeAndSetToStore(incomeToDelete));
   }
 
   function handleAddClick() {
@@ -224,7 +221,7 @@ export default function Received({ income, setIncome }: ReceivedProps) {
         <tbody>
           {income.map((income, index) => (
             <tr key={income.id} className={styles.TableRow}>
-              <td className={styles.Delete} onClick={() => handleDeleteClick(income.id)}>x</td>
+              <td className={styles.Delete} onClick={() => handleDeleteClick(income)}>x</td>
               {
               editableNameIndex === index ?
                 <td>
