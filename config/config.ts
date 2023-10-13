@@ -1,1 +1,1 @@
-export const apiUrl = process.env.NODE_ENV === 'production' ? 'https://familyfinance-be.azurewebsites.net' : 'http://localhost:8080';
+export const apiUrl = process.env.NODE_ENV === 'production' ? 'https://familyfinance-be.onrender.com' : 'http://localhost:8080';

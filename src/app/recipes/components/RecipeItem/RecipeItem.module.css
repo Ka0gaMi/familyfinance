@@ -1,0 +1,16 @@
+.RecipeItemQuantity {
+  font-size: 0.8rem;
+  color: #ccc;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.RecipeItemPrice {
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.RecipeInstructionsList {
+  list-style: none;
+}
